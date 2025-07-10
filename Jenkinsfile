@@ -16,7 +16,7 @@ pipeline {
 
         stage('SonarQube Scan') {
             environment {
-                SONAR_TOKEN = credentials('Sonar-token-scanning-test') // Jenkins credential ID
+                SONAR_TOKEN = credentials('SONAR_TOKEN') // Jenkins credential ID
             }
             steps {
                 sh """
