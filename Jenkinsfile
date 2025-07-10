@@ -19,7 +19,7 @@ pipeline {
 
         stage('SonarQube Scan') {
             environment {
-                SONAR_TOKEN = credentials('new-test-nodejs') // SonarQube token
+                SONAR_TOKEN = credentials('new-test-nodejs')
             }
             steps {
                 sh '''
@@ -35,7 +35,11 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    echo "🧹 Removing old Docker image (if exists): ${IMAGE_NAME}"
+                    echo "📦 Checking for Dockerfile..."
+                    sh "ls -l"
+                    sh "test -f Dockerfile || { echo '❌ Dockerfile not found!'; exit 1; }"
+
+                    echo "🧹 Removing old image if exists"
                     sh "docker images -q ${IMAGE_NAME} | xargs -r docker rmi -f || true"
 
                     echo "🐳 Building Docker image: ${FULL_IMAGE}"
@@ -47,7 +51,7 @@ pipeline {
         stage('Trivy Scan') {
             steps {
                 script {
-                    echo "🔍 Scanning image with Trivy: ${FULL_IMAGE}"
+                    echo "🔍 Running Trivy scan..."
                     sh "trivy image --format table --severity HIGH,CRITICAL --output trivy-report.txt ${FULL_IMAGE}"
                 }
             }
