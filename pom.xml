@@ -10,7 +10,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <sonar.projectKey>myapp</sonar.projectKey>
+    <sonar.projectKey>new-test-sonar</sonar.projectKey>
     <sonar.host.url>http://13.201.203.112:9000</sonar.host.url>
     <sonar.login>sqp_d8df8e10d9964df05e7c4cd71f47b6d31d4c0d06</sonar.login>
   </properties>
