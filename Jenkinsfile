@@ -2,11 +2,12 @@ pipeline {
     agent any
 
     environment {
-        GIT_REPO    = 'https://github.com/eswarvuyyala/test-repo.git'
-        SONAR_HOST  = 'http://13.201.203.112:9000'
-        SONAR_PROJECT_KEY = 'test-repo'
-        IMAGE_NAME  = 'test-repo-image'
-        IMAGE_TAG   = "v1.0.${BUILD_NUMBER}"
+        GIT_REPO           = 'https://github.com/eswarvuyyala/test-repo.git'
+        SONAR_HOST         = 'http://13.201.203.112:9000'
+        SONAR_PROJECT_KEY  = 'test-repo'
+        IMAGE_NAME         = 'test-repo-image'
+        IMAGE_TAG          = "v1.0.${BUILD_NUMBER}"
+        FULL_IMAGE         = "${IMAGE_NAME}:${IMAGE_TAG}"
     }
 
     stages {
@@ -18,7 +19,7 @@ pipeline {
 
         stage('SonarQube Scan') {
             environment {
-                SONAR_TOKEN = credentials('new-test-nodejs') // Sonar token ID
+                SONAR_TOKEN = credentials('new-test-nodejs') // SonarQube token
             }
             steps {
                 sh '''
@@ -34,16 +35,20 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    def fullImage = "${IMAGE_NAME}:${IMAGE_TAG}"
-                    echo "🧹 Cleaning up any old image: ${IMAGE_NAME}"
+                    echo "🧹 Removing old Docker image (if exists): ${IMAGE_NAME}"
+                    sh "docker images -q ${IMAGE_NAME} | xargs -r docker rmi -f || true"
 
-                    // Remove any image with the same name (if exists)
-                    sh """
-                        docker images -q ${IMAGE_NAME} | xargs -r docker rmi -f || true
-                    """
+                    echo "🐳 Building Docker image: ${FULL_IMAGE}"
+                    sh "docker build -t ${FULL_IMAGE} ."
+                }
+            }
+        }
 
-                    echo "🐳 Building new Docker image: ${fullImage}"
-                    sh "docker build -t ${fullImage} ."
+        stage('Trivy Scan') {
+            steps {
+                script {
+                    echo "🔍 Scanning image with Trivy: ${FULL_IMAGE}"
+                    sh "trivy image --format table --severity HIGH,CRITICAL --output trivy-report.txt ${FULL_IMAGE}"
                 }
             }
         }
