@@ -1,9 +1,4 @@
-stage('Clone Git Repo') {
-    steps {
-        git url: 'https://github.com/eswarvuyyala/test-repo.git', branch: 'main', credentialsId: 'git-credentials'
-    }
-}
-apipeline {
+pipeline {
     agent any
 
     environment {
@@ -13,7 +8,7 @@ apipeline {
     stages {
         stage('Clone Git Repo') {
             steps {
-                git url: "${GIT_REPO}", branch: 'main', credentialsId: 'git-credentials'
+                git url: "${GIT_REPO}", branch: 'main'
             }
         }
     }
