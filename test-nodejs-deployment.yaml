@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: react-app
+  namespace: test-nodejs
+  labels:
+    app: react-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: react-app
+  template:
+    metadata:
+      labels:
+        app: react-app
+    spec:
+      containers:
+      - name: react-app
+        image: 923687682884.dkr.ecr.ap-south-1.amazonaws.com/react-app:latest  # Will be overridden by Jenkins
+        ports:
+        - containerPort: 80
+        imagePullPolicy: Always

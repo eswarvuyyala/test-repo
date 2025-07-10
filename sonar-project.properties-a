@@ -1,0 +1,24 @@
+# must match the project key configured in Jenkins and SonarQube
+sonar.projectKey=test-sonar1
+
+# project name (shown in SonarQube UI)
+sonar.projectName=Test Sonar Project
+
+# project version (optional)
+sonar.projectVersion=1.0
+
+# source files location (change if needed)
+sonar.sources=.
+
+# encoding (important for source code scanning)
+sonar.sourceEncoding=UTF-8
+
+# language (optional, autodetected usually)
+# sonar.language=js / java / ts etc.
+
+# exclusions (optional, skip files)
+# sonar.exclusions=**/test/**,**/*.spec.js
+
+# optional: specify project base directory
+# sonar.projectBaseDir=.
+
